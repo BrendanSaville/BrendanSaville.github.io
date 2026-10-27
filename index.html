@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Tiny 3D Renderer</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            background: #111;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+            background: #1b1b24;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="c" width="640" height="480"></canvas>
+    <script>
+        const canvas = document.getElementById("c");
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width, H = canvas.height;
+
+        // 1. SCENE DATA: a cube = 8 vertices + 12 triangles (indices into vertices)
+        const vertices = [
+            [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+            [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1],
+        ];
+        const triangles = [
+            [0, 2, 1], [0, 3, 2], [4, 5, 6], [4, 6, 7],   // near (z=-1), far (z=+1)
+            [0, 1, 5], [0, 5, 4], [3, 6, 2], [3, 7, 6],   // bottom, top
+            [0, 4, 7], [0, 7, 3], [1, 2, 6], [1, 6, 5],   // left, right
+        ];
+
+        // 2. MATH: rotate a point around the Y and X axes
+        function rotate([x, y, z], ax, ay) {
+            let c = Math.cos(ay), s = Math.sin(ay);
+            [x, z] = [x * c + z * s, -x * s + z * c];
+            c = Math.cos(ax); s = Math.sin(ax);
+            [y, z] = [y * c - z * s, y * s + z * c];
+            return [x, y, z];
+        }
+
+        // 3. PROJECTION: perspective divide, then map to screen pixels
+        function project([x, y, z]) {
+            const cameraDist = 5, fov = 400;
+            const scale = fov / (z + cameraDist);
+            return [W / 2 + x * scale, H / 2 - y * scale];
+        }
+
+        const sub = (a, b) => a.map((v, i) => v - b[i]);
+        const cross = (a, b) => [
+            a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+        const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        const norm = v => { const l = Math.hypot(...v); return v.map(x => x / l); };
+
+        const light = norm([0.5, 0.8, -1]);
+
+        // 4. RENDER LOOP
+        function frame(t) {
+            const ax = t * 0.0006, ay = t * 0.001;
+            ctx.clearRect(0, 0, W, H);
+
+            const world = vertices.map(v => rotate(v, ax, ay));
+            const faces = [];
+
+            for (const [a, b, c] of triangles) {
+                const A = world[a], B = world[b], C = world[c];
+                const normal = norm(cross(sub(B, A), sub(C, A)));
+
+                // back-face culling: skip triangles facing away from the camera
+                const toCamera = [-A[0], -A[1], -5 - A[2]];
+                if (dot(normal, toCamera) <= 0) continue;
+
+                const depth = (A[2] + B[2] + C[2]) / 3;
+                const brightness = 0.25 + 0.75 * Math.max(0, dot(normal, light));
+                faces.push({ pts: [A, B, C].map(project), depth, brightness });
+            }
+
+            // painter's algorithm: draw far triangles first
+            faces.sort((p, q) => q.depth - p.depth);
+
+            for (const f of faces) {
+                const g = Math.round(255 * f.brightness);
+                ctx.fillStyle = `rgb(${g * 0.4 | 0}, ${g * 0.7 | 0}, ${g})`;
+                ctx.strokeStyle = ctx.fillStyle;
+                ctx.beginPath();
+                ctx.moveTo(...f.pts[0]);
+                ctx.lineTo(...f.pts[1]);
+                ctx.lineTo(...f.pts[2]);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke(); // hides hairline gaps between triangles
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    </script>
+</body>
+
+</html>
