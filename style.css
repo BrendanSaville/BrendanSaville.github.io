@@ -58,7 +58,7 @@ body {
   font-family: var(--font-body);
   line-height: 1.7;
 
-  background: 
+  background:
     radial-gradient(
       circle at top right,
       rgba(59, 130, 246, 0.15),
@@ -330,10 +330,10 @@ section {
 }
 
 /* =========================
-    CONTACT
+    SOCIALS
 ========================= */
 
-.contact-link {
+.social-link {
   color: var(--text);
 
   text-decoration: none;
@@ -341,7 +341,7 @@ section {
   font-weight: 500;
 }
 
-.contact-link:hover {
+.social-link:hover {
   color: var(--primary);
 }
 
