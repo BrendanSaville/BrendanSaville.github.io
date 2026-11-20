@@ -1,11 +1,11 @@
 /* =========================
-    IMPORT
+   IMPORT
 ========================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap');
 
 /* =========================
-    VARIABLES
+   VARIABLES
 ========================= */
 
 :root {
@@ -32,7 +32,7 @@
 }
 
 /* =========================
-    RESET
+   RESET
 ========================= */
 
 * {
@@ -42,7 +42,40 @@
 }
 
 /* =========================
-    GLOBAL
+   FIREFOX
+========================= */
+
+@supports (scrollbar-width: thin) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-light) var(--bg);
+  }
+}
+
+/* =========================
+   CHROME / EDGE / SAFARI
+========================= */
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-light);
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* =========================
+   GLOBAL
 ========================= */
 
 html {
@@ -84,7 +117,7 @@ main {
 }
 
 /* =========================
-    TYPOGRAPHY
+   TYPOGRAPHY
 ========================= */
 
 h1, h2, h3, h4 {
@@ -118,7 +151,7 @@ h1, h2, h3, h4 {
 }
 
 /* =========================
-    HEADER
+   HEADER
 ========================= */
 
 .header {
@@ -157,7 +190,7 @@ h1, h2, h3, h4 {
 }
 
 /* =========================
-    BRAND
+   BRAND
 ========================= */
 
 .brand {
@@ -189,7 +222,7 @@ h1, h2, h3, h4 {
 }
 
 /* =========================
-    NAVIGATION
+   NAVIGATION
 ========================= */
 
 nav {
@@ -212,7 +245,7 @@ nav a:hover {
 }
 
 /* =========================
-    SECTIONS
+   SECTIONS
 ========================= */
 
 section {
@@ -220,7 +253,7 @@ section {
 }
 
 /* =========================
-    ABOUT SECTION
+   ABOUT SECTION
 ========================= */
 
 .hero-name {
@@ -254,7 +287,7 @@ section {
 }
 
 /* =========================
-    PROJECTS
+   PROJECTS
 ========================= */
 
 .project-card {
@@ -292,7 +325,7 @@ section {
 }
 
 /* =========================
-    BUTTONS
+   BUTTONS
 ========================= */
 
 .btn-primary {
@@ -330,7 +363,7 @@ section {
 }
 
 /* =========================
-    SOCIALS
+   SOCIALS
 ========================= */
 
 .social-link {
@@ -346,7 +379,7 @@ section {
 }
 
 /* =========================
-    FOOTER
+   FOOTER
 ========================= */
 
 .footer {
