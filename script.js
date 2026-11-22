@@ -1,4 +1,1 @@
-var currentYear = new Date().getFullYear();
-
-document.getElementById("year").textContent = currentYear;
-document.getElementById("timespan").textContent = (currentYear - 2014);
+document.getElementById("year").textContent = new Date().getFullYear();
